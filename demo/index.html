@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue Demo</title>
+  <script type="text/javascript" src = '../dist/vue.js'></script>
+</head>
+<body>
+  <div id="test2" v-bind:class='{active:isActive}'>
+    <span>{{message}}</span>
+    <span v-if='seen'>You see me</span>
+    <input type="" name="" v-model = 'message'>
+    <span>computed messge {{computedMessage}}</span>
+  </div>
+  <ul id="list">
+    <todo-item v-for='(item, index) in todos' v-bind:todo='item'></todo-item>
+  </ul>
+  <div id="todo-list">
+    <input
+      v-model='newText'
+      v-on:keyup.enter='addNewTodo'
+      placeholder='Something todo'
+    >
+    <ul
+      is = 'task-item'
+      v-for='(item, index) in todoList'
+      v-bind:title='item'
+      v-on:remove='todoList.splice(index, 1)'
+    >
+
+    </ul>
+  </div>
+
+  <div id="counter">
+    <button @click='counter +=1'> +1</button>
+    <p>{{counter}}</p>
+  </div>
+  <div class="check">
+    <input type="checkbox" name="" v-model='checked'>
+    <p>{{checked}}</p>
+  </div>
+  <div class="select">
+    <select v-model='selected'>
+      <option v-for='option in options' v-bind:value='option.value'>{{option.text}}</option>
+    </select>
+    {{selected}}
+  </div>
+  <div class="message">
+    <child test-message = 'Hello world'></child>
+  </div>
+  <script type="text/javascript">
+    var app = new Vue({
+      el: '#test2',
+      data: {
+        message: 'hello world',
+        seen: true,
+        isActive: true
+      },
+      computed: {
+        computedMessage: function (str) {
+          return this.message.split('').reverse().join('');
+        }
+      }
+    });
+    var todos = [{ text: 'This is a t '}, { text: 'This is a t '}, { text: 'This is a t '} , { text: 'This is a t '}, { text: 'This is a t '}, { text: 'This is a t '}];
+    Vue.component('todo-item', {
+      props: ['todo'],// 数组
+      template: '<li>{{todo.text}}</li>' // 标签闭合
+    });
+    var app2  = new Vue({
+      el: '#list',
+      data: {
+        todos: todos
+      }
+    });
+    Vue.component('task-item', {
+      props: ['title'],
+      template: '<li><span >{{title}}</span><span class = "close" v-on:click="$emit(\'remove\')">❎</span></li>'
+    });
+    var todoList = new Vue({
+      el: '#todo-list',
+      data: {
+        newText: '',
+        todoList: [
+          'Study',
+          'Test',
+          'Update',
+          'Install'
+        ]
+      },
+      methods: {
+        addNewTodo: function () {
+          this.todoList.push(this.newText);
+          this.newText = '';
+        }
+      }
+    });
+    new Vue({
+      el: '#counter',
+      data: {
+        counter: 0
+      }
+    });
+    new Vue({
+      el: '.check',
+      data: {
+        checked: false
+      }
+    });
+    new Vue({
+      el: '.select',
+      data: {
+        selected: 'a',
+        options: [{
+          text: 'A',
+          value: 'a'
+        },{
+          text: 'B',
+          value: 'b'
+        },{
+          text: 'C',
+          value: 'c'
+        }]
+      }
+    });
+    Vue.component('child', {
+      props: ['testMessage'],
+      template: "<span>{{testMessage}}</span>"
+    });
+    new Vue({
+      el: '.message'
+    });
+  </script>
+</body>
+</html>
