@@ -9,7 +9,7 @@ export function pluckModuleFunction (
   key: string
 ): Array<Function> {
   return modules
-    ? modules.map(m => m[key]).filter(_ => _)
+    ? modules.map(m => m[key]).filter(_ => _) // filter 用于排除掉 falsy 的项
     : []
 }
 
@@ -69,7 +69,7 @@ export function getBindingAttr (
   getStatic?: boolean
 ): ?string {
   const dynamicValue =
-    getAndRemoveAttr(el, ':' + name) ||
+    (el, ':' + name) ||
     getAndRemoveAttr(el, 'v-bind:' + name)
   if (dynamicValue != null) {
     return dynamicValue

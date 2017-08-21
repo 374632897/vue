@@ -1,4 +1,4 @@
-/* @flow */
+l/* @flow */
 
 import { makeMap, isBuiltInTag, cached } from 'shared/util'
 

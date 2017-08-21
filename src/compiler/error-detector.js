@@ -9,9 +9,9 @@ const prohibitedKeywordRE = new RegExp('\\b' + (
   'extends,finally,continue,debugger,function,arguments'
 ).split(',').join('\\b|\\b') + '\\b')
 // check valid identifier for v-for
-const identRE = /[A-Za-z_$][\w$]*/
+const identRE = /[A-Za-z_$][\w$]*/ // 变量名
 // strip strings in expressions
-const stripStringRE = /'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`/g
+const stripStringRE = /'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`/g // 存疑
 
 // detect problematic expressions in a template
 export function detectErrors (ast: ?ASTNode): Array<string> {
@@ -25,7 +25,7 @@ export function detectErrors (ast: ?ASTNode): Array<string> {
 function checkNode (node: ASTNode, errors: Array<string>) {
   if (node.type === 1) {
     for (const name in node.attrsMap) {
-      if (dirRE.test(name)) {
+      if (dirRE.test(name)) { // 如果是指令
         const value = node.attrsMap[name]
         if (value) {
           if (name === 'v-for') {
@@ -52,7 +52,7 @@ function checkFor (node: ASTElement, text: string, errors: Array<string>) {
   checkIdentifier(node.iterator1, 'v-for iterator', text, errors)
   checkIdentifier(node.iterator2, 'v-for iterator', text, errors)
 }
-
+// 检查指令里面的变量名是否满足条件
 function checkIdentifier (ident: ?string, type: string, text: string, errors: Array<string>) {
   if (typeof ident === 'string' && !identRE.test(ident)) {
     errors.push(`- invalid ${type} "${ident}" in expression: ${text}`)
@@ -61,7 +61,7 @@ function checkIdentifier (ident: ?string, type: string, text: string, errors: Ar
 
 function checkExpression (exp: string, text: string, errors: Array<string>) {
   try {
-    new Function(`return ${exp}`)
+    new Function(`return ${exp}`) // 检查是否没有语法错误
   } catch (e) {
     const keywordMatch = exp.replace(stripStringRE, '').match(prohibitedKeywordRE)
     if (keywordMatch) {
