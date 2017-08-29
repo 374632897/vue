@@ -35,13 +35,16 @@ export function initExtend (Vue: GlobalAPI) {
     const Sub = function VueComponent (options) {
       this._init(options)
     }
+    // 使用 Object.create 完成继承
     Sub.prototype = Object.create(Super.prototype)
+    // 此时的 constructor 是 Sub, 需要重新定义 contructor
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
     Sub.options = mergeOptions(
       Super.options,
       extendOptions
     )
+    // 使得子类可以访问父类
     Sub['super'] = Super
     // allow further extension/mixin/plugin usage
     Sub.extend = Super.extend
